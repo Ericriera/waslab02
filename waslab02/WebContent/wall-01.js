@@ -48,9 +48,13 @@ function deleteHandler(tweetID) {
 	 */	
 	req = new XMLHttpRequest();
 	req.open('DELETE', tweetsURI+ "/" + tweetID, /*async*/true);
+	var token = localStorage.getItem("token_"+tweetID);
+	req.setRequestHeader("Authorization", token);
 	req.onload = function() { 
 		if (req.status == 200) { // 200 OK
 			var tw = document.getElementById("tweet_"+tweetID);
+			localStorage.removeItem("id_"+tweetID);
+			localStorage.removeItem("token_"+tweetID);
 			tw.remove();
 		}
 	};
@@ -79,17 +83,15 @@ function getTweets() {
 				var tweet = obj[i];
 				if(tweet.id == localStorage.getItem("id_" + tweet.id)) {
 					HTML += getTweetHTML(tweet, "delete");
-					console.log("delete");
 				} 
 				else {
 					HTML += getTweetHTML(tweet, "like");
-					console.log("like");
 				}
 			}
 			document.getElementById("tweet_list").innerHTML = HTML;
 		}
 	};
-	req.send(null); 
+	req.send(null);
 };
 
 
@@ -116,8 +118,6 @@ function tweetHandler() {
 	req.setRequestHeader("Content-Type","application/json");
 	const obj = {author: author, text: text};
 	req.send(JSON.stringify(obj));
-	
-	var id = document.getElementById("tweet_id").value;
 	
 	
 	/*var mes1 = "Someone ({0}) wants to insert a new tweet ('{1}'),\n but this feature is not implemented yet!";
