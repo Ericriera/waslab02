@@ -98,6 +98,10 @@ function tweetHandler() {
 	req.onload = function() { 
 		if (req.status == 200) { // 200 OK
 			var nt = JSON.parse(req.responseText);
+			var id = nt.id;
+			var token = nt.token;
+			localStorage.setItem("id_"+id, id);
+			localStorage.setItem("token_"+id, token);
 			var tweetHTML = getTweetHTML(nt, "delete");
 			document.getElementById("tweet_list").innerHTML = tweetHTML + document.getElementById("tweet_list").innerHTML;
 		}
@@ -105,6 +109,9 @@ function tweetHandler() {
 	req.setRequestHeader("Content-Type","application/json");
 	const obj = {author: author, text: text};
 	req.send(JSON.stringify(obj));
+	
+	var id = document.getElementById("tweet_id").value;
+	
 	
 	/*var mes1 = "Someone ({0}) wants to insert a new tweet ('{1}'),\n but this feature is not implemented yet!";
 	alert(mes1.format(author, text));*/

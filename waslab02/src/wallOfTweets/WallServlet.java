@@ -1,6 +1,7 @@
 package wallOfTweets;
 
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -70,6 +71,7 @@ public class WallServlet extends HttpServlet {
 				String text = obj.getString("text");
 				Tweet tw = Database.insertTweet(author, text);
 				JSONObject obj2 = new JSONObject(tw);
+				obj2.put("token", sha256(String.valueOf(tw.getId())));
 				resp.getWriter().println(obj2.toString());
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -90,5 +92,25 @@ public class WallServlet extends HttpServlet {
 		
 		if(!todook)throw new ServletException("DELETE not yet implemented");
 	}
+	
+	public static String sha256(String base) {
+	try {
+		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+		byte[] hash = digest.digest(base.getBytes("UTF-8"));
+		StringBuffer hexString = new StringBuffer();
+
+		for (int i = 0; i < hash.length; i++) {
+			String hex = Integer.toHexString(0xff & hash[i]);
+			if (hex.length() == 1) {
+				hexString.append('0');
+			}
+			hexString.append(hex);
+		}
+
+		return hexString.toString();
+	} catch(Exception e) {
+		throw new RuntimeException(e);
+	}
+}
 
 }
