@@ -44,10 +44,17 @@ function likeHandler(tweetID) {
 
 function deleteHandler(tweetID) {
 	/*
-
 	 * TASK #4 
-
 	 */	
+	req = new XMLHttpRequest();
+	req.open('DELETE', tweetsURI+ "/" + tweetID, /*async*/true);
+	req.onload = function() { 
+		if (req.status == 200) { // 200 OK
+			var tw = document.getElementById("tweet_"+tweetID);
+			tw.remove();
+		}
+	};
+	req.send(/*no params*/null);
 }
 
 function getTweetHTML(tweet, action) {  // action :== "like" xor "delete"
